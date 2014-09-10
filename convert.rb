@@ -14,6 +14,7 @@ module Convert
   # be removed.  Any badly formatted string will throw an ArgumentError.
   # Good examples: '123', '-123', '+123'
   # Bad examples: '+-123', '-.0', '.9'
+  # All strings are assumed to be representations of base-10 numbers.
   def Convert.string_to_integer(s)
     # truncate all decimal parts
     if /\./ =~ s
