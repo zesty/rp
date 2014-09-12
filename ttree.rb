@@ -14,7 +14,7 @@
 #
 class TernaryTree
 
-  Val = 0 unless const_defined?(:Val)  # suppress warnings on reload
+  Val = 0 unless const_defined?(:Val) # suppress warnings on reload
   Left = 1 unless const_defined?(:Left)
   Mid = 2 unless const_defined?(:Mid)
   Right = 3 unless const_defined?(:Right)
@@ -22,7 +22,7 @@ class TernaryTree
   # Create a new ternary tree, optionally passing in and array of comparable items
   def initialize(comparable_ary=[])
     # nodes are just an array of length 4, see constants above for magic
-    # saves lots of memory in large trees
+    # saves lots of memory over objects in large trees
     @root = mk_node()
 
     unless comparable_ary.empty?
@@ -93,6 +93,32 @@ class TernaryTree
   # DOES count node itself.
   def total_size(node=@root)
     1 + left_size() + mid_size() + right_size()
+  end
+
+  # TODO FIXME tests
+  def get_val(path)
+    if '' == path
+      return @root[Val]
+    end
+
+    node = @root
+    path.downcase.each_char do |c|
+      case c
+        when 'l'
+          node = node[Left]
+        when 'm'
+          node = node[Mid]
+        when 'r'
+          node = node[Right]
+        else
+          raise ArgumentError
+      end
+      if node.nil?
+        return nil
+      end
+    end
+
+    node[Val]
   end
 
   # A string representation of the tree instance.  Nothing pretty.
