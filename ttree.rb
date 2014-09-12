@@ -14,27 +14,23 @@
 #
 class TernaryTree
 
-  Val = 0 unless const_defined?(:Val)
+  Val = 0 unless const_defined?(:Val)  # suppress warnings on reload
   Left = 1 unless const_defined?(:Left)
   Mid = 2 unless const_defined?(:Mid)
   Right = 3 unless const_defined?(:Right)
 
   # Create a new ternary tree, optionally passing in and array of comparable items
-  def initialize(int_ary=[])
+  def initialize(comparable_ary=[])
     # nodes are just an array of length 4, see constants above for magic
+    # saves lots of memory in large trees
     @root = mk_node()
 
-    if 0 < int_ary.length
-      @root[Val] = int_ary[0]
-      int_ary[1..(int_ary.length-1)].each do |i|
+    unless comparable_ary.empty?
+      @root[Val] = comparable_ary[0]
+      comparable_ary[1..(comparable_ary.length-1)].each do |i|
         add(i)
       end
     end
-  end
-
-  # These are not the droids you're looking for
-  def mk_node  # private
-    [nil] * 4
   end
 
   # Add a new item to the ternary tree instance.
@@ -45,10 +41,10 @@ class TernaryTree
 
     # what you'd expect
     # only create nodes as needed, on the fly, maintaining tree ref integrity
-    while true do
+    loop do
       if node[Val] == nil
         node[Val] = val
-        return
+        break
       elsif val == node[Val]
         if nil == node[Mid]
           node = node[Mid] = mk_node()
@@ -63,7 +59,7 @@ class TernaryTree
           node = node[Left]
         end
         next
-      else  # val > node[Val]
+      else # val > node[Val]
         if nil == node[Right]
           node = node[Right] = mk_node()
         else
@@ -97,34 +93,6 @@ class TernaryTree
   # DOES count node itself.
   def total_size(node=@root)
     1 + left_size() + mid_size() + right_size()
-  end
-
-  # These are not the droids you're looking for
-  def size(node, which)  # private
-    # BFS, not that it matters too much here
-    size = 0
-    q = []
-    q.push(node[which])
-
-    while 0 < q.length
-      node = q.shift()
-      if nil == node
-        next
-      end
-
-      size += 1
-
-      if nil != node[Left]
-        q.push(node[Left])
-      end
-      if nil != node[Mid]
-        q.push(node[Mid])
-      end
-      if nil != node[Right]
-        q.push(node[Right])
-      end
-    end
-    size
   end
 
   # A string representation of the tree instance.  Nothing pretty.
@@ -161,6 +129,37 @@ class TernaryTree
     s
   end
 
-  private :mk_node, :size
+  private
+  def mk_node
+    [nil] * 4
+  end
+
+  def size(node, which) # private
+    # BFS, not that it matters too much here
+    size = 0
+    q = []
+    q.push(node[which])
+
+    while 0 < q.length
+      node = q.shift()
+      if nil == node
+        next
+      end
+
+      size += 1
+
+      if nil != node[Left]
+        q.push(node[Left])
+      end
+      if nil != node[Mid]
+        q.push(node[Mid])
+      end
+      if nil != node[Right]
+        q.push(node[Right])
+      end
+    end
+    size
+  end
 
 end
+

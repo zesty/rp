@@ -1,20 +1,11 @@
-
 require_relative "ttree.rb"
 require "test/unit"
 
 class TestTernaryTree < Test::Unit::TestCase
 
-  def setup
-    # pass
-  end
-
-  def teardown
-    # pass
-  end
-
   def test_well_behaved
     t = TernaryTree.new([])
-    assert_nothing_thrown() {t.add(1)}
+    assert_nothing_thrown() { t.add(1) }
   end
 
   def test_constructor
